@@ -86,7 +86,7 @@ class Simulation():
             _ybounds = np.array([[self.Config.ybounds[0] + 0.02, self.Config.ybounds[1] - 0.02]] * len(self.population[self.population[:,11] == 0]))
             self.population[self.population[:,11] == 0] = out_of_bounds(self.population[self.population[:,11] == 0],
                                                                         _xbounds, _ybounds)
-
+#SOMETHING
         #set randoms
         if self.Config.lockdown:
             if len(self.pop_tracker.infectious) == 0:
