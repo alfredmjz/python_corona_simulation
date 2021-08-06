@@ -24,6 +24,7 @@ from visualiser import build_fig, draw_tstep, set_style, plot_sir
 # productive comment. YAY!
 
 class Simulation():
+    """The Product to be Built"""
     #TODO: if lockdown or otherwise stopped: destination -1 means no motion
     def __init__(self, *args, **kwargs):
         #load default config data
@@ -62,7 +63,7 @@ class Simulation():
 
         if self.frame == 0 and self.Config.visualise:
             #initialize figure
-            self.fig, self.spec, self.ax1, self.ax2 = build_fig(self.Config)
+            self.fig, self.spec, self.ax1, self.ax2 = build_fig(self.Config, self.figX, self.figY)
 
         #check destinations if active
         #define motion vectors if destinations active and not everybody is at destination
@@ -170,7 +171,6 @@ dead: %i, of total: %i' %(self.frame, self.pop_tracker.susceptible[-1], self.pop
 
     def run(self):
         '''run simulation'''
-
         i = 0
 
         while i < self.Config.simulation_steps:
