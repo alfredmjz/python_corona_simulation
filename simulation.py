@@ -24,7 +24,8 @@ from visualiser import build_fig, draw_tstep, set_style, plot_sir
 # productive comment. YAY!
 
 class Simulation():
-    """The Product to be Built"""
+    """The Product to be built in builder.py"""
+    
     #TODO: if lockdown or otherwise stopped: destination -1 means no motion
     def __init__(self, *args, **kwargs):
         #load default config data
