@@ -24,12 +24,16 @@ from visualiser import build_fig, draw_tstep, set_style, plot_sir
 # productive comment. YAY!
 
 class Simulation():
+    """The Product to be built in builder.py"""
+    
     #TODO: if lockdown or otherwise stopped: destination -1 means no motion
     def __init__(self, *args, **kwargs):
         #load default config data
         self.Config = Configuration(*args, **kwargs)
         self.frame = 0
-
+        self.figX = 5
+        self.figY = 7
+        
         #initialize default population
         self.population_init()
 
@@ -62,7 +66,7 @@ class Simulation():
 
         if self.frame == 0 and self.Config.visualise:
             #initialize figure
-            self.fig, self.spec, self.ax1, self.ax2 = build_fig(self.Config)
+            self.fig, self.spec, self.ax1, self.ax2 = build_fig(self.Config, self.figX, self.figY)
 
         #check destinations if active
         #define motion vectors if destinations active and not everybody is at destination
@@ -170,9 +174,7 @@ dead: %i, of total: %i' %(self.frame, self.pop_tracker.susceptible[-1], self.pop
 
     def run(self):
         '''run simulation'''
-
         i = 0
-
         while i < self.Config.simulation_steps:
             try:
                 self.tstep()
@@ -187,7 +189,8 @@ dead: %i, of total: %i' %(self.frame, self.pop_tracker.susceptible[-1], self.pop
                 if len(self.population[(self.population[:,6] == 1) |
                                        (self.population[:,6] == 4)]) == 0:
                     i = self.Config.simulation_steps
-
+            i += 1
+            
         if self.Config.save_data:
             save_data(self.population, self.pop_tracker)
 
