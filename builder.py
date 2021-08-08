@@ -1,102 +1,181 @@
 from abc import ABCMeta, abstractstaticmethod
 from simulation import Simulation
 
-class ISimulationBuilder(metaclass=ABCMeta):
-    """The ISimulationBuilder Interface"""
+class IBuilder(metaclass=ABCMeta):
+    """The IBuilder Interface"""
 
     @abstractstaticmethod
-    def getPopulation(self): pass
+    def setPopulation(self): pass
     
     @abstractstaticmethod
-    def getScenario(self): pass
+    def setPlot(self): pass
     
     @abstractstaticmethod
-    def getPlot(self): pass
+    def setFig(self): pass
     
     @abstractstaticmethod
-    def getFig(self): pass
+    def setLockdown(self): pass
+    
+    @abstractstaticmethod
+    def setSelfIsolation(self): pass
+    
+    @abstractstaticmethod
+    def setReducedInteraction(self): pass
         
 
-class SimulationBuilder(ISimulationBuilder):
+class SimulationBuilder(IBuilder):
     """The Concrete Simulation Builder"""
 
     def __init__(self):
-        self.simulation = Simulation()
-        self.__config = self.simulation.Config
+        self.reset()
 
+      
+    def reset(self):
+        self.simulation = Simulation() #Product is imported from simulation.py
+        self.__config = self.simulation.Config
+        self.__config.simulation_steps = 10
+ 
         
-    def setPopulation(self, mean_age, max_age, xbounds, ybounds):
+    def setPopulation(self, mean_age=45, max_age=105, xbounds=[0,1], ybounds=[0,1]):
         '''Sets population properties of the simulation'''
         
         self.__config.mean_age = mean_age
         self.__config.max_age = max_age
         self.__config.xbounds = xbounds
         self.__config.ybounds = ybounds
-        self.__population = self.simulation.population_init
+        self.simulation.population_init
         
-    def setScenario(self, scenario):
-        '''Sets scenario of the simulation'''
-        
-        if(scenario == None):
-            self.__scenario = None
-            
-        elif(scenario == "lockdown"):
-            self.__scenario = self.__config.set_lockdown(lockdown_percentage = 0.1, lockdown_compliance = 0.95)
-            self.__population = self.simulation.population_init() #reinitialize population to enforce new variables
-            
-        elif(scenario == "self isolation"):
-            self.__scenario = self.__config.set_self_isolation(self_isolate_proportion = 0.9, 
-                                                               isolation_bounds = [0.02, 0.02, 0.09, 0.98], 
-                                                               traveling_infects=False)
-            self.__population = self.simulation.population_init() #reinitialize population to enforce new roaming bounds
-
-        elif(scenario == "reduced interaction"):
-            self.__scenario = self.__config.set_reduced_interaction()
-            self.__population = self.simulation.population_init() #reinitialize population to enforce new speed
-
-           
-    def setPlot(self, plot_style, colorblind_mode, colorblind_type):
-        '''Sets plot style and colors'''
+         
+    def setPlot(self, plot_style="default", colorblind_mode = False, colorblind_type="deuteranopia"):
+        '''Sets plot style, colorblind mode and colors'''
         
         self.__config.plot_style = plot_style
         self.__config.colorblind_mode = colorblind_mode
         self.__config.colorblind_type = colorblind_type
-        
-        self.__plot_palette = self.__config.get_palette()
+        self.__config.get_palette()
+
     
-    def set_fig(self, figX, figY):
+    def setFig(self, figX=5, figY=7):
+        '''Sets window's size'''
+        
         self.simulation.figX = figX
         self.simulation.figY = figY
         
-    def getPopulation(self):
-        return self.__population
-    
-    def getScenario(self):
-        return self.__scenario
-    
-    def getPlot(self):
-        return self.__plot_palette
+        
+    def setLockdown(self, lockdown_percentage, lockdown_compliance):
+        '''Implements lockdown in the simulation'''
+        
+        self.__config.lockdown_percentage = lockdown_percentage
+        self.__config.lockdown_compliance = lockdown_compliance
+        self.__config.set_lockdown(lockdown_percentage, lockdown_compliance)
+        self.simulation.population_init() #reinitialize population to enforce new variables
+        
 
-    def getFig(self):
-        return self.figX, self.figY
-   
+    def setSelfIsolation(self, self_isolate_proportion, isolation_bounds, traveling_infects):
+        '''Implements self isolation in the simulation'''  
+        
+        self.__config.self_isolate_proportion = self_isolate_proportion
+        self.__config.isolation_bounds = isolation_bounds
+        self.__config.traveling_infects = traveling_infects
+        self.__config.set_self_isolation(self_isolate_proportion, isolation_bounds, traveling_infects)
+        self.simulation.population_init() #reinitialize population to enforce new roaming bounds
+        
+        
+    def setReducedInteraction(self,speed):
+        '''Implements reduced interaction in the simulation'''
+        
+        self.__config.speed = speed
+        self.__config.set_reduced_interaction(speed)
+        self.simulation.population_init() #reinitialize population to enforce new speed
+        
+        
+    def getResult(self):
+        return self.simulation.run()
+    
 
 
 class Director():
     "The Director builds a complex representation"
-      
-    @staticmethod
-    def construct():
-        "Constructs and runs the Simulation Product"
-        SIMULATION = SimulationBuilder()
-        SIMULATION.setPopulation(45, 105, [0,2], [0,2])
-        SIMULATION.setScenario("lockdown")
-        SIMULATION.setPlot("dark", False, 'deuteranopia')
-        SIMULATION.set_fig(10, 14)
-        SIMULATION.simulation.run()
+    def __init__(self, builder):
+        self.__builder = builder
+    
+    
+    def getBuilder(self):
+        return self.__builder
+    
+    
+    def constructDefault(self):
+        '''Constructs default and runs the Simulation Product'''
+        self.__builder.reset()
+        self.__builder.setPopulation()
+        self.__builder.setPlot()
+        self.__builder.setFig()
+        self.__builder.getResult()
+    
         
+    def constructLockdown(self):
+        '''Construct lockdown'''
+        
+        self.__builder.reset()
+        self.__builder.setPopulation(25, 60, [0,2], [0,2])
+        self.__builder.setLockdown(0.1, 0.95)
+        self.__builder.setPlot("dark")
+        self.__builder.setFig(10, 14)
+        self.__builder.getResult()
+    
+        
+    def constructSelfIsolation(self):
+        '''Construct self isolation'''
+        
+        self.__builder.reset()
+        self.__builder.setPopulation(50, 115, [0,2], [0,2])
+        self.__builder.setSelfIsolation(0.9, [0.02, 0.02, 0.09, 0.98], False)
+        self.__builder.setPlot("dark")
+        self.__builder.setFig(10, 14)
+        self.__builder.getResult()
+
+
+    def constructReducedInteraction(self):
+        '''Construct reduced interaction'''
+        
+        self.__builder.reset()
+        self.__builder.setPopulation(32, 60, [0,2], [0,2])
+        self.__builder.setReducedInteraction(0.01)
+        self.__builder.setPlot("default")
+        self.__builder.setFig(10, 14)
+        self.__builder.getResult()
 
    
 if __name__ == "__main__":
-    #Client
-    Director.construct()
+    "Client"
+    
+    #Run simulation with default configuration
+    builder = SimulationBuilder()       #Initialize and resets simulation
+    SIMULATION = Director(builder)
+    SIMULATION.constructDefault()
+    print("Simulation #1 End\n")
+    
+    #Run simulation with custom configuration
+    builder = SimulationBuilder()       
+    builder.setPopulation(50,100,[0,1],[0,1])
+    builder.setFig(3,5)
+    builder.setPlot("dark", True)
+    builder.getResult()
+    print("Simulation #2 End\n")
+    
+    #Run simulation with lockdown configuration
+    SIMULATION = Director(builder)
+    SIMULATION.constructLockdown()
+    print("Simulation #3 End\n")
+    
+    #Run simulation with self-isolation configuration
+    SIMULATION = Director(builder)
+    SIMULATION.constructSelfIsolation()
+    print("Simulation #4 End\n")
+    
+    #Run simulation with reduced interaction configuration
+    SIMULATION = Director(builder)
+    SIMULATION.constructReducedInteraction()
+    print("\nSimulation #5 End", "All simulation ends", sep="\n")
+
+
