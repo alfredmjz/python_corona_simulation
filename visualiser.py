@@ -17,9 +17,9 @@ def set_style(Config):
         mpl.style.use('plot_styles/dark.mplstyle')
 
 
-def build_fig(Config, figsize=(5,7)):
+def build_fig(Config, figX, figY):
     set_style(Config)
-    fig = plt.figure(figsize=(5,7))
+    fig = plt.figure(figsize=(figX,figY))
     spec = fig.add_gridspec(ncols=1, nrows=2, height_ratios=[5,2])
 
     ax1 = fig.add_subplot(spec[0,0])

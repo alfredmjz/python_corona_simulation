@@ -40,7 +40,7 @@ class Configuration():
         self.plot_style = kwargs.get('plot_style', 'default') #can be default, dark, ...
         self.colorblind_mode = kwargs.get('colorblind_mode', False)
         #if colorblind is enabled, set type of colorblindness
-        #available: deuteranopia, protanopia, tritanopia. defauld=deuteranopia
+        #available: deuteranopia, protanopia, tritanopia. default=deuteranopia
         self.colorblind_type = kwargs.get('colorblind_type', 'deuteranopia')
         
         #world variables, defines where population can and cannot roam
