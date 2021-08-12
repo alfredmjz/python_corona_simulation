@@ -19,8 +19,11 @@ class SimulationAbstraction:
     
     def toggleColorblind(self, mode, colorblind_type):
         self._environment.setColorblind(self._config, mode, colorblind_type)
+    
+    def changePlotStyle(self, plot_style):
+        self._environment.setPlotStyle(self._config, plot_style)
         
-    def instantiate(self): 
+    def instantiate(self):
         self._environment.produce_population(self._simulation)
         self._environment.run_simulation(self._simulation)
     
@@ -109,10 +112,13 @@ class populationDependent(Implementator):
     def setSimulationSteps(config, val):
         config.simulation_steps = val
     
-    def setColorblind(config, mode, colorblind_type="deuteranopia"):
+    def setColorblind(config, mode, colorblind_type):
         config.colorblind_mode = mode
         config.colorblind_type = colorblind_type
-        
+    
+    def setPlotStyle(config, plot_style):
+        config.plot_style = plot_style
+    
     def produce_population(simulation):
         simulation.population_init()
 
@@ -140,9 +146,12 @@ class scenarioDependent(Implementator):
     def setSimulationSteps(config, val):
         config.simulation_steps = val
     
-    def setColorblind(config, mode, colorblind_type="deuteranopia"):
+    def setColorblind(config, mode, colorblind_type):
         config.colorblind_mode = mode
         config.colorblind_type = colorblind_type
+    
+    def setPlotStyle(config, plot_style):
+        config.plot_style = plot_style
         
     def produce_population(simulation):
         simulation.population_init()
@@ -159,18 +168,32 @@ if __name__ == "__main__":
     """
 
     environment = populationDependent
-    SIMULATION1 = SimulationVariants(environment)
-    SIMULATION1.updateSimulationSteps(1000)
-    SIMULATION1.updatePopulationSize(5000)
-    SIMULATION1.updatePopulationAge(20,80)
-    SIMULATION1.enable_ageRiskDependencies(35, 50, 0.3, "linear")
+    SIMULATION1 = SimulationAbstraction(environment)
+    SIMULATION1.updateSimulationSteps(10)
+    SIMULATION1.changePlotStyle("dark")
+    SIMULATION1.toggleColorblind(True, "deuteranopia")
     SIMULATION1.instantiate()
+
+
+    SIMULATION2 = SimulationVariants(environment)
+    SIMULATION2.updateSimulationSteps(10)
+    SIMULATION2.updatePopulationSize(5000)
+    SIMULATION2.updatePopulationAge(20,80)
+    SIMULATION2.enable_ageRiskDependencies(35, 50, 0.3, "linear")
+    SIMULATION2.instantiate()
 
     
     environment = scenarioDependent
-    SIMULATION2 = SimulationVariants(environment)
-    SIMULATION2.updateSimulationSteps(1000)
-    SIMULATION2.applyLockdown(0.5, 0.9)
-    SIMULATION2.noHealthcare()
-    SIMULATION2.instantiate()
+    SIMULATION3 = SimulationAbstraction(environment)
+    SIMULATION3.updateSimulationSteps(10)
+    SIMULATION3.changePlotStyle("dark")
+    SIMULATION3.toggleColorblind(True, "deuteranopia")
+    SIMULATION3.instantiate()
+    
+
+    SIMULATION4 = SimulationVariants(environment)
+    SIMULATION4.updateSimulationSteps(10)
+    SIMULATION4.applyLockdown(0.5, 0.9)
+    SIMULATION4.noHealthcare()
+    SIMULATION4.instantiate()
 
