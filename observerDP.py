@@ -6,7 +6,7 @@ from simulation import Simulation
 
 class ConfigurationSubject(ABC):
     """
-    The Subject interface declares a set of methods for managing subscribers.
+    The Publisher/ subject interface
     """
 
     @abstractmethod
@@ -77,7 +77,7 @@ class ConcreteConfiguration(ConfigurationSubject):
     
 class ObserverInterface(ABC):
     """
-    The Observer interface declares the update method, used by subjects.
+    The Observer interface
     """
 
     @abstractmethod
@@ -113,7 +113,7 @@ class SimulationObserver(ObserverInterface):
 
 class ScenarioObserver(ObserverInterface):
     def receiveSignal(self, states):
-        print("PopulationObserver: Amendments made: ", states)
+        print("ScenarioObserver: Amendments made: ", states)
     
     def sync(self, config): 
         print("ScenarioObserver: Syncing new configuration options...")
