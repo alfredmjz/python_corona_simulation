@@ -187,7 +187,8 @@ dead: %i, of total: %i' %(self.frame, self.pop_tracker.susceptible[-1], self.pop
                 if len(self.population[(self.population[:,6] == 1) |
                                        (self.population[:,6] == 4)]) == 0:
                     i = self.Config.simulation_steps
-
+            i += 1
+            
         if self.Config.save_data:
             save_data(self.population, self.pop_tracker)
 

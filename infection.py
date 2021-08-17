@@ -64,8 +64,8 @@ def find_nearby(population, infection_zone, traveling_infects=False,
 
 
 def infect(population, Config, frame, send_to_location=False,
-           location_bounds=[], destinations=[], location_no=1,
-           location_odds=1.0):
+        location_bounds=[], destinations=[], location_no=1,
+        location_odds=1.0):
     '''finds new infections.
 
     Function that finds new infections in an area around infected persens
@@ -148,9 +148,9 @@ def infect(population, Config, frame, send_to_location=False,
                             if np.random.uniform() <= location_odds:
                                 population[idx],\
                                 destinations[idx] = go_to_location(population[idx],
-                                                                   destinations[idx],
-                                                                   location_bounds,
-                                                                   dest_no=location_no)
+                                                                destinations[idx],
+                                                                location_bounds,
+                                                                dest_no=location_no)
                         else:
                             pass
                     new_infections.append(idx)
@@ -169,13 +169,13 @@ def infect(population, Config, frame, send_to_location=False,
                 #find infected nearby healthy person
                 if Config.traveling_infects:
                     poplen = find_nearby(population, infection_zone,
-                                         traveling_infects = True,
-                                         kind = 'infected')
+                                        traveling_infects = True,
+                                        kind = 'infected')
                 else:
                     poplen = find_nearby(population, infection_zone,
-                                         traveling_infects = True,
-                                         kind = 'infected',
-                                         infected_previous_step = infected_previous_step)
+                                        traveling_infects = True,
+                                        kind = 'infected',
+                                        infected_previous_step = infected_previous_step)
 
                 if poplen > 0:
                     if np.random.random() < (Config.infection_chance * poplen):
@@ -310,8 +310,8 @@ def recover_or_die(population, frame, Config):
 
 
 def compute_mortality(age, mortality_chance, risk_age=50,
-                      critical_age=80, critical_mortality_chance=0.5,
-                      risk_increase='linear'):
+                    critical_age=80, critical_mortality_chance=0.5,
+                    risk_increase='linear'):
 
     '''compute mortality based on age
 
